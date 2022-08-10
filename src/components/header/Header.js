@@ -1,21 +1,27 @@
 import React, { useEffect, useState } from "react";
+import { useAuthContext } from "../../context/AuthProvider";
 
 import LoginButton from "../login/loginButton/LoginButton";
 import LoginForm from "../login/loginForm/LoginForm";
 
 import { HeaderFrame } from "./Header.styles";
 
-const Header = () => {
-    const [loginForm, setLoginForm] = useState(false)
+const Header = ({isLoggedIn}) => {
+    const [loginForm, setLoginForm] = useState(false);
+    const authContext = useAuthContext()?.auth;
 
     useEffect(() => {
-        console.log(loginForm)
-    }, [loginForm])
+        if(Object.keys(authContext).length === 0){
+            return;
+        }
+        console.log(authContext)
+    },
+    [authContext])
 
     return (
         <HeaderFrame>
-            <LoginButton setLoginForm={setLoginForm}/>
-            {loginForm ? <LoginForm /> : null}
+            {isLoggedIn ? <p>{`${authContext.name} ${authContext.surename}`}</p> : <LoginButton setLoginForm={setLoginForm}/>}
+            {loginForm ? <LoginForm setLoginForm={setLoginForm}/> : null}
         </HeaderFrame>
     )
 }

@@ -8,7 +8,6 @@ export const Button = styled.button`
     margin: 0 auto;
     line-height: 1.5;
     display: inline-block;
-    vertical-align: middle;
     margin-right: 10em;
     color: white;
 `
