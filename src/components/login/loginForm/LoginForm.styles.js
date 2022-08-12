@@ -1,8 +1,7 @@
 import styled from "styled-components"
 
 export const Wrapper = styled.div`
-    opacity:0.8;
-    background-color: black;
+    background-color: rgba(0, 0, 0, 0.8);
     position:fixed;
     width:100%;
     height:100%;

@@ -3,50 +3,11 @@ import { Forms, Wrapper, Header, Text, TextInput, CloseButton, Line, LoginButton
 import AuthContext from "../../../context/AuthProvider";
 
 const LOGIN_URL='http://localhost/api/auth/login'
-const USER_DATA='http://localhost/api/auth/me'
 
 const LoginForm = ({setLoginForm}) => {
     const [inputs, setInputs] = React.useState({});
     const [errorMsg, setErrorMsg] = React.useState("")
-    const [token, setToken] = React.useState("")
     const {setAuth} = useContext(AuthContext)
-
-    React.useEffect( ()=>{
-        const getUserData = async () => {
-            if(!token){
-                return;
-            }
-            const userData = await fetch(USER_DATA, {
-                method: 'GET',
-                mode: 'cors',
-                cache: 'no-cache',
-                credentials: "include",
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                redirect: 'follow',
-                referrerPolicy: 'no-referrer',
-            }).then(data => {
-                if(!data.ok){
-                    throw new Error('Unauthorized!!')
-                }
-                return data.json()
-            }).then(data => {
-                return data
-            }).catch(err => {
-                console.log(err)
-                setErrorMsg("Nieprawidłowy token. Zaloguj się jeszcze raz")
-            })
-
-            if(!errorMsg){
-                setAuth({token: token, ...userData});
-                setErrorMsg("Logowanie poprawne");
-                setLoginForm(false);
-            }
-        }
-        getUserData()
-    }, [token, setAuth, setLoginForm, errorMsg])
 
     const handleChange = (event) => {
         const name = event.target.name;
@@ -81,7 +42,13 @@ const LoginForm = ({setLoginForm}) => {
             setErrorMsg("Login lub haslo niepoprawne")
         })
 
-        setToken(authToken)
+        if (!errorMsg){
+            setAuth({token: authToken});
+            sessionStorage.setItem("authData", JSON.stringify({token: authToken}))
+            setErrorMsg("Logowanie poprawne");
+            setLoginForm(false);
+        }
+        // setToken(authToken)
     }
 
     return (

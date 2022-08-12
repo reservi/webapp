@@ -1,6 +1,17 @@
 import './App.css';
 import React from 'react';
 import Header from './components/header/Header';
+import UserProfile from './components/User/UserProfile/UserProfile';
+import UserAccount from './components/profile/account/UserAccount';
+
+// Routes
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { ProtectedRoute } from './components/routes/AuthenticatedRoute';
+
+// External Libraries
+import _ from 'lodash';
+
+// contexts
 import { useAuthContext } from './context/AuthProvider';
 
 const USER_DATA='http://localhost/api/auth/me'
@@ -13,13 +24,13 @@ function App() {
   React.useEffect(() => {
     const interval = setInterval(() => {
         setPrevVal(!prevVal)
-      }, 6000);
+      }, 30000);
     return () => clearInterval(interval);
   })
 
   React.useEffect(() => {
     const isTokenValid = async () => {
-      await fetch(USER_DATA, {
+      const request = await fetch(USER_DATA, {
         method: 'GET',
         mode: 'cors',
         cache: 'no-cache',
@@ -34,12 +45,16 @@ function App() {
           if(!data.ok){
               throw new Error();
           }
-          console.log("I am logged in")
           setIsLoggedIn(true)
+          return data.json()
       }).catch(() => {
           setIsLoggedIn(false)
           authContext.setAuth({})
       })
+      if (_.isEqual({...request, ...authContext.auth}, authContext.auth)){
+        return
+      }
+      authContext.setAuth({...request, ...authContext.auth})
     }
     if (!authContext?.auth.token){
       return;
@@ -49,8 +64,27 @@ function App() {
 
   return (
     <>
-    <Header isLoggedIn={isLoggedIn}/>
+      <BrowserRouter>
+        <Header isLoggedIn={isLoggedIn}/>
+        <Routes>
+          <Route exact path="/"/>
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <UserProfile/>
+              </ProtectedRoute>
+            }
+          >
+            <Route exact path="account" element={<UserAccount/>}/>
+            <Route exact path="password" element={<p>Jamate kudesai123</p>}/>
+            <Route exact path="integration" element={<p>Jamate kudesai2435</p>}/>
+          </Route>
+        </Routes>
+      </BrowserRouter>
+
     </>
+
   )
 }
 

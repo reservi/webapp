@@ -9,4 +9,6 @@ export const HeaderFrame = styled.div`
     justify-content: flex-end;
     align-items: center;
     background-color: gray;
+    overflow: hidden;
+    position: static;
 `;
