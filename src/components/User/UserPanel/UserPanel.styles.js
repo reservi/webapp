@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 export const Wrapper = styled.div`
     all: unset;
-    width: 10em;
+    width: 13em;
     margin: 0 auto;
     line-height: 1.5;
     margin-right: 10em;
@@ -24,9 +24,10 @@ export const Wrapper = styled.div`
 export const UserName = styled.div`
     width: 10em;
     height: 3em;
-    display: block;
+    display: inline-block;
     border-radius: 10px;
     cursor: pointer;
+    float: left;
     line-height: 3;
 `
 
